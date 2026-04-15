@@ -335,4 +335,56 @@ void addThrowsWhenOtherIsNull() {
 
     assertEquals("other must not be null", exception.getMessage());
 }
+@Test
+void reshapeReturnsNewArrayWithNewShape() {
+    NDArray array = NDArray.arange(6);
+
+    NDArray reshaped = array.reshape(2, 3);
+
+    assertArrayEquals(new int[]{2, 3}, reshaped.shape());
+    assertEquals(2, reshaped.ndim());
+    assertEquals(6, reshaped.size());
+    assertArrayEquals(new float[]{0f, 1f, 2f, 3f, 4f, 5f}, reshaped.toFlatArray(), 0.0001f);
+
+    assertArrayEquals(new int[]{6}, array.shape());
+}
+@Test
+void reshapeSupportsMinusOneInference() {
+    NDArray array = NDArray.arange(6);
+
+    NDArray reshaped = array.reshape(3, -1);
+
+    assertArrayEquals(new int[]{3, 2}, reshaped.shape());
+    assertArrayEquals(new float[]{0f, 1f, 2f, 3f, 4f, 5f}, reshaped.toFlatArray(), 0.0001f);
+}
+@Test
+void reshapeThrowsWhenSizeDoesNotMatch() {
+    NDArray array = NDArray.arange(6);
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class,
+                    () -> array.reshape(4, 2));
+
+    assertEquals("data length does not match shape", exception.getMessage());
+}
+@Test
+void reshapeThrowsWhenMoreThanOneMinusOneIsUsed() {
+    NDArray array = NDArray.arange(6);
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class,
+                    () -> array.reshape(-1, -1));
+
+    assertEquals("only one dimension can be -1", exception.getMessage());
+}
+@Test
+void reshapeThrowsWhenMinusOneCannotBeInferred() {
+    NDArray array = NDArray.arange(5);
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class,
+                    () -> array.reshape(2, -1));
+
+    assertEquals("cannot infer shape", exception.getMessage());
+}
 }

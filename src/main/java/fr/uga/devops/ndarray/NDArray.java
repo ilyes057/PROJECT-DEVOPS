@@ -238,4 +238,49 @@ public class NDArray {
             this.data[i] *= scalar;
         }
     }
+    private static int[] normalizeReshape(int dataLength, int... newShape) {
+        if (newShape == null || newShape.length == 0) {
+            throw new IllegalArgumentException("shape must not be empty");
+        }
+
+        int minusOneCount = 0;
+        int knownProduct = 1;
+        int minusOneIndex = -1;
+
+        for (int i = 0; i < newShape.length; i++) {
+            int dim = newShape[i];
+
+            if (dim == -1) {
+                minusOneCount++;
+                minusOneIndex = i;
+            } else if (dim < 0) {
+                throw new IllegalArgumentException("shape dimensions must be >= -1");
+            } else {
+                knownProduct *= dim;
+            }
+        }
+
+        if (minusOneCount > 1) {
+            throw new IllegalArgumentException("only one dimension can be -1");
+        }
+
+        int[] normalized = Arrays.copyOf(newShape, newShape.length);
+
+        if (minusOneCount == 1) {
+            if (knownProduct == 0 || dataLength % knownProduct != 0) {
+                throw new IllegalArgumentException("cannot infer shape");
+            }
+            normalized[minusOneIndex] = dataLength / knownProduct;
+        }
+
+        if (computeSize(normalized) != dataLength) {
+            throw new IllegalArgumentException("data length does not match shape");
+        }
+
+        return normalized;
+    }
+    public NDArray reshape(int... newShape) {
+        int[] normalizedShape = normalizeReshape(data.length, newShape);
+        return new NDArray(this.data, normalizedShape);
+    }
 }
