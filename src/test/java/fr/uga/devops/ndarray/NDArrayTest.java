@@ -217,4 +217,22 @@ void toFlatArrayReturnsCopyAndNotInternalArray() {
 
     assertArrayEquals(new float[]{1f, 2f, 3f}, array.toFlatArray(), 0.0001f);
 }
+@Test
+void oneDimensionalArrayHasReadableStringRepresentation() {
+    NDArray array = NDArray.array(new float[]{1f, 2f, 3f});
+
+    assertEquals("[1.0 2.0 3.0]", array.toString());
+}
+
+@Test
+void twoDimensionalArrayHasReadableStringRepresentation() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f},
+            {3f, 4f}
+    });
+
+    String expected = "[[1.0 2.0]" + System.lineSeparator() + " [3.0 4.0]]";
+
+    assertEquals(expected, matrix.toString());
+}
 }
