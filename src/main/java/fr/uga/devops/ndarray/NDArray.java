@@ -159,4 +159,83 @@ public class NDArray {
         }
         return size;
     }
+    private void ensureSameShape(NDArray other) {
+        if (other == null) {
+            throw new IllegalArgumentException("other must not be null");
+        }
+
+        if (!Arrays.equals(this.shape, other.shape)) {
+            throw new IllegalArgumentException("shape mismatch");
+        }
+    }
+    public NDArray add(NDArray other) {
+        ensureSameShape(other);
+
+        float[] result = new float[data.length];
+        for (int i = 0; i < data.length; i++) {
+            result[i] = this.data[i] + other.data[i];
+        }
+        return new NDArray(result, shape);
+    }
+
+    public void addInPlace(NDArray other) {
+        ensureSameShape(other);
+
+        for (int i = 0; i < data.length; i++) {
+            this.data[i] += other.data[i];
+        }
+    }
+
+    public NDArray subtract(NDArray other) {
+        ensureSameShape(other);
+
+        float[] result = new float[data.length];
+        for (int i = 0; i < data.length; i++) {
+            result[i] = this.data[i] - other.data[i];
+        }
+
+        return new NDArray(result, shape);
+    }
+
+    public void subtractInPlace(NDArray other) {
+        ensureSameShape(other);
+
+        for (int i = 0; i < data.length; i++) {
+            this.data[i] -= other.data[i];
+        }
+    }
+
+    public NDArray multiply(NDArray other) {
+        ensureSameShape(other);
+
+        float[] result = new float[data.length];
+        for (int i = 0; i < data.length; i++) {
+            result[i] = this.data[i] * other.data[i];
+        }
+
+        return new NDArray(result, shape);
+    }
+
+    public void multiplyInPlace(NDArray other) {
+        ensureSameShape(other);
+
+        for (int i = 0; i < data.length; i++) {
+            this.data[i] *= other.data[i];
+        }
+    }
+
+    public NDArray multiply(float scalar) {
+        float[] result = new float[data.length];
+        for (int i = 0; i < data.length; i++) {
+            result[i] = this.data[i] * scalar;
+        }
+
+        return new NDArray(result, shape);
+    }
+
+    public void multiplyInPlace(float scalar) {
+        for (int i = 0; i < data.length; i++) {
+            this.data[i] *= scalar;
+        }
+    }
 }

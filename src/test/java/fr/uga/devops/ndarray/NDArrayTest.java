@@ -235,4 +235,104 @@ void twoDimensionalArrayHasReadableStringRepresentation() {
 
     assertEquals(expected, matrix.toString());
 }
+@Test
+void addReturnsNewArrayWithoutModifyingOriginal() {
+    NDArray a = NDArray.array(new float[]{1f, 2f, 3f});
+    NDArray b = NDArray.array(new float[]{10f, 20f, 30f});
+
+    NDArray result = a.add(b);
+
+    assertArrayEquals(new float[]{11f, 22f, 33f}, result.toFlatArray(), 0.0001f);
+    assertArrayEquals(new float[]{1f, 2f, 3f}, a.toFlatArray(), 0.0001f);
+}
+
+@Test
+void addInPlaceModifiesCurrentArray() {
+    NDArray a = NDArray.array(new float[]{1f, 2f, 3f});
+    NDArray b = NDArray.array(new float[]{10f, 20f, 30f});
+
+    a.addInPlace(b);
+
+    assertArrayEquals(new float[]{11f, 22f, 33f}, a.toFlatArray(), 0.0001f);
+}
+
+@Test
+void subtractReturnsNewArray() {
+    NDArray a = NDArray.array(new float[]{10f, 20f, 30f});
+    NDArray b = NDArray.array(new float[]{1f, 2f, 3f});
+
+    NDArray result = a.subtract(b);
+
+    assertArrayEquals(new float[]{9f, 18f, 27f}, result.toFlatArray(), 0.0001f);
+}
+
+@Test
+void subtractInPlaceModifiesCurrentArray() {
+    NDArray a = NDArray.array(new float[]{10f, 20f, 30f});
+    NDArray b = NDArray.array(new float[]{1f, 2f, 3f});
+
+    a.subtractInPlace(b);
+
+    assertArrayEquals(new float[]{9f, 18f, 27f}, a.toFlatArray(), 0.0001f);
+}
+
+@Test
+void multiplyReturnsNewArrayElementWise() {
+    NDArray a = NDArray.array(new float[]{2f, 3f, 4f});
+    NDArray b = NDArray.array(new float[]{10f, 20f, 30f});
+
+    NDArray result = a.multiply(b);
+
+    assertArrayEquals(new float[]{20f, 60f, 120f}, result.toFlatArray(), 0.0001f);
+}
+
+@Test
+void multiplyInPlaceModifiesCurrentArrayElementWise() {
+    NDArray a = NDArray.array(new float[]{2f, 3f, 4f});
+    NDArray b = NDArray.array(new float[]{10f, 20f, 30f});
+
+    a.multiplyInPlace(b);
+
+    assertArrayEquals(new float[]{20f, 60f, 120f}, a.toFlatArray(), 0.0001f);
+}
+
+@Test
+void multiplyByScalarReturnsNewArray() {
+    NDArray a = NDArray.array(new float[]{2f, 3f, 4f});
+
+    NDArray result = a.multiply(2f);
+
+    assertArrayEquals(new float[]{4f, 6f, 8f}, result.toFlatArray(), 0.0001f);
+    assertArrayEquals(new float[]{2f, 3f, 4f}, a.toFlatArray(), 0.0001f);
+}
+
+@Test
+void multiplyByScalarInPlaceModifiesCurrentArray() {
+    NDArray a = NDArray.array(new float[]{2f, 3f, 4f});
+
+    a.multiplyInPlace(2f);
+
+    assertArrayEquals(new float[]{4f, 6f, 8f}, a.toFlatArray(), 0.0001f);
+}
+
+@Test
+void addThrowsWhenShapesDiffer() {
+    NDArray a = NDArray.zeros(3);
+    NDArray b = NDArray.zeros(2, 2);
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class, () -> a.add(b));
+
+    assertEquals("shape mismatch", exception.getMessage());
+}
+
+@Test
+void addThrowsWhenOtherIsNull() {
+    NDArray a = NDArray.array(new float[]{1f, 2f, 3f});
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class, () -> a.add(null));
+
+    assertEquals("other must not be null", exception.getMessage());
+}
 }
