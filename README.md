@@ -1,3 +1,8 @@
+![CI](https://github.com/ilyes057/PROJECT-DEVOPS/actions/workflows/ci.yml/badge.svg)
+![Java](https://img.shields.io/badge/Java-17-blue)
+![Maven](https://img.shields.io/badge/Maven-3.9+-orange)
+![JUnit](https://img.shields.io/badge/JUnit-5-brightgreen)
+![JaCoCo](https://img.shields.io/badge/Coverage-JaCoCo-yellowgreen)
 # ndarray-java
 
 Mini bibliothèque Java inspirée de NumPy pour manipuler des tableaux multidimensionnels 1D et 2D.
