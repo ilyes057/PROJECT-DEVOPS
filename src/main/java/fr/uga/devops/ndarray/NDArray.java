@@ -288,4 +288,21 @@ public class NDArray {
         Arrays.fill(values, 1f);
         return new NDArray(values, shape);
     }
+    public NDArray transpose() {
+        if (ndim() != 2) {
+            throw new IllegalArgumentException("transpose is only supported for 2D arrays");
+        }
+
+        int rows = shape[0];
+        int cols = shape[1];
+        float[] transposedData = new float[data.length];
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                transposedData[c * rows + r] = data[r * cols + c];
+            }
+        }
+
+        return new NDArray(transposedData, cols, rows);
+    }
 }

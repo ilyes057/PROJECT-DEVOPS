@@ -410,4 +410,49 @@ void onesCreates2DArray() {
             0.0001f
     );
 }
+@Test
+void transposeSwapsRowsAndColumns() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f, 3f},
+            {4f, 5f, 6f}
+    });
+
+    NDArray transposed = matrix.transpose();
+
+    assertEquals(2, transposed.ndim());
+    assertEquals(6, transposed.size());
+    assertArrayEquals(new int[]{3, 2}, transposed.shape());
+    assertArrayEquals(
+            new float[]{1f, 4f, 2f, 5f, 3f, 6f},
+            transposed.toFlatArray(),
+            0.0001f
+    );
+}
+
+@Test
+void transposeWorksOnSquareMatrix() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f},
+            {3f, 4f}
+    });
+
+    NDArray transposed = matrix.transpose();
+
+    assertArrayEquals(new int[]{2, 2}, transposed.shape());
+    assertArrayEquals(
+            new float[]{1f, 3f, 2f, 4f},
+            transposed.toFlatArray(),
+            0.0001f
+    );
+}
+
+@Test
+void transposeThrowsFor1DArray() {
+    NDArray array = NDArray.array(new float[]{1f, 2f, 3f});
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class, array::transpose);
+
+    assertEquals("transpose is only supported for 2D arrays", exception.getMessage());
+}
 }
