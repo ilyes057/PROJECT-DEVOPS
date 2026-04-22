@@ -283,4 +283,55 @@ public class NDArray {
         int[] normalizedShape = normalizeReshape(data.length, newShape);
         return new NDArray(this.data, normalizedShape);
     }
+    public static NDArray ones(int... shape) {
+        float[] values = new float[computeSize(shape)];
+        Arrays.fill(values, 1f);
+        return new NDArray(values, shape);
+    }
+    public NDArray transpose() {
+        if (ndim() != 2) {
+            throw new IllegalArgumentException("transpose is only supported for 2D arrays");
+        }
+
+        int rows = shape[0];
+        int cols = shape[1];
+        float[] transposedData = new float[data.length];
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                transposedData[c * rows + r] = data[r * cols + c];
+            }
+        }
+
+        return new NDArray(transposedData, cols, rows);
+    }
+    public float sum() {
+        float total = 0f;
+
+        for (float value : data) {
+            total += value;
+        }
+
+        return total;
+    }
+    public static NDArray linspace(float start, float stop, int num) {
+        if (num <= 0) {
+            throw new IllegalArgumentException("num must be > 0");
+        }
+
+        float[] values = new float[num];
+
+        if (num == 1) {
+            values[0] = start;
+            return new NDArray(values, 1);
+        }
+
+        float step = (stop - start) / (num - 1);
+
+        for (int i = 0; i < num; i++) {
+            values[i] = start + i * step;
+        }
+
+        return new NDArray(values, num);
+    }
 }
