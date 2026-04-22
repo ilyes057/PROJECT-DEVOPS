@@ -169,13 +169,35 @@ public class NDArray {
         }
     }
     public NDArray add(NDArray other) {
-        ensureSameShape(other);
-
-        float[] result = new float[data.length];
-        for (int i = 0; i < data.length; i++) {
-            result[i] = this.data[i] + other.data[i];
+        if (other == null) {
+            throw new IllegalArgumentException("other must not be null");
         }
-        return new NDArray(result, shape);
+
+        int[] leftShape2D = normalizedShape(this.shape);
+        int[] rightShape2D = normalizedShape(other.shape);
+
+        if (!areBroadcastable(leftShape2D, rightShape2D)) {
+            throw new IllegalArgumentException("shape mismatch");
+        }
+
+        int resultRows = Math.max(leftShape2D[0], rightShape2D[0]);
+        int resultCols = Math.max(leftShape2D[1], rightShape2D[1]);
+
+        float[] resultData = new float[resultRows * resultCols];
+
+        for (int row = 0; row < resultRows; row++) {
+            for (int col = 0; col < resultCols; col++) {
+                float leftValue = this.broadcastValueAt(row, col);
+                float rightValue = other.broadcastValueAt(row, col);
+                resultData[row * resultCols + col] = leftValue + rightValue;
+            }
+        }
+
+        if (this.ndim() == 1 && other.ndim() == 1 && resultRows == 1) {
+            return new NDArray(resultData, resultCols);
+        }
+
+        return new NDArray(resultData, resultRows, resultCols);
     }
 
     public void addInPlace(NDArray other) {
@@ -342,5 +364,33 @@ public class NDArray {
         }
 
         return new NDArray(result, shape);
+    }
+    private static int[] normalizedShape(int[] shape) {
+        if (shape.length == 1) {
+            return new int[]{1, shape[0]};
+        }
+        return Arrays.copyOf(shape, shape.length);
+    }
+
+    private static boolean areBroadcastable(int[] left, int[] right) {
+        return (left[0] == right[0] || left[0] == 1 || right[0] == 1)
+                && (left[1] == right[1] || left[1] == 1 || right[1] == 1);
+    }
+
+    private float broadcastValueAt(int row, int col) {
+        if (shape.length == 1) {
+            if (shape[0] == 1) {
+                return data[0];
+            }
+            return data[col];
+        }
+
+        int rows = shape[0];
+        int cols = shape[1];
+
+        int sourceRow = (rows == 1) ? 0 : row;
+        int sourceCol = (cols == 1) ? 0 : col;
+
+        return data[sourceRow * cols + sourceCol];
     }
 }
