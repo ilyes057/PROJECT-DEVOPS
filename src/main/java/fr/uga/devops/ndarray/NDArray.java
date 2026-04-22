@@ -283,4 +283,9 @@ public class NDArray {
         int[] normalizedShape = normalizeReshape(data.length, newShape);
         return new NDArray(this.data, normalizedShape);
     }
+    public static NDArray ones(int... shape) {
+        float[] values = new float[computeSize(shape)];
+        Arrays.fill(values, 1f);
+        return new NDArray(values, shape);
+    }
 }

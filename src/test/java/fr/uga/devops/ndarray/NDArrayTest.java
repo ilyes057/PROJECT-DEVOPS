@@ -387,4 +387,27 @@ void reshapeThrowsWhenMinusOneCannotBeInferred() {
 
     assertEquals("cannot infer shape", exception.getMessage());
 }
+@Test
+void onesCreates1DArray() {
+    NDArray array = NDArray.ones(3);
+
+    assertEquals(1, array.ndim());
+    assertEquals(3, array.size());
+    assertArrayEquals(new int[]{3}, array.shape());
+    assertArrayEquals(new float[]{1f, 1f, 1f}, array.toFlatArray(), 0.0001f);
+}
+
+@Test
+void onesCreates2DArray() {
+    NDArray matrix = NDArray.ones(2, 3);
+
+    assertEquals(2, matrix.ndim());
+    assertEquals(6, matrix.size());
+    assertArrayEquals(new int[]{2, 3}, matrix.shape());
+    assertArrayEquals(
+            new float[]{1f, 1f, 1f, 1f, 1f, 1f},
+            matrix.toFlatArray(),
+            0.0001f
+    );
+}
 }
