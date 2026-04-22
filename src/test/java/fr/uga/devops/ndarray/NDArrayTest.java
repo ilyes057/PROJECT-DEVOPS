@@ -387,4 +387,170 @@ void reshapeThrowsWhenMinusOneCannotBeInferred() {
 
     assertEquals("cannot infer shape", exception.getMessage());
 }
+@Test
+void onesCreates1DArray() {
+    NDArray array = NDArray.ones(3);
+
+    assertEquals(1, array.ndim());
+    assertEquals(3, array.size());
+    assertArrayEquals(new int[]{3}, array.shape());
+    assertArrayEquals(new float[]{1f, 1f, 1f}, array.toFlatArray(), 0.0001f);
+}
+
+@Test
+void onesCreates2DArray() {
+    NDArray matrix = NDArray.ones(2, 3);
+
+    assertEquals(2, matrix.ndim());
+    assertEquals(6, matrix.size());
+    assertArrayEquals(new int[]{2, 3}, matrix.shape());
+    assertArrayEquals(
+            new float[]{1f, 1f, 1f, 1f, 1f, 1f},
+            matrix.toFlatArray(),
+            0.0001f
+    );
+}
+@Test
+void transposeSwapsRowsAndColumns() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f, 3f},
+            {4f, 5f, 6f}
+    });
+
+    NDArray transposed = matrix.transpose();
+
+    assertEquals(2, transposed.ndim());
+    assertEquals(6, transposed.size());
+    assertArrayEquals(new int[]{3, 2}, transposed.shape());
+    assertArrayEquals(
+            new float[]{1f, 4f, 2f, 5f, 3f, 6f},
+            transposed.toFlatArray(),
+            0.0001f
+    );
+}
+
+@Test
+void transposeWorksOnSquareMatrix() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f},
+            {3f, 4f}
+    });
+
+    NDArray transposed = matrix.transpose();
+
+    assertArrayEquals(new int[]{2, 2}, transposed.shape());
+    assertArrayEquals(
+            new float[]{1f, 3f, 2f, 4f},
+            transposed.toFlatArray(),
+            0.0001f
+    );
+}
+
+@Test
+void transposeThrowsFor1DArray() {
+    NDArray array = NDArray.array(new float[]{1f, 2f, 3f});
+
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class, array::transpose);
+
+    assertEquals("transpose is only supported for 2D arrays", exception.getMessage());
+}
+@Test
+void sumWorksFor1DArray() {
+    NDArray array = NDArray.array(new float[]{1f, 2f, 3f});
+
+    assertEquals(6f, array.sum(), 0.0001f);
+}
+
+@Test
+void sumWorksFor2DArray() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f},
+            {3f, 4f}
+    });
+
+    assertEquals(10f, matrix.sum(), 0.0001f);
+}
+
+@Test
+void sumWorksForZeros() {
+    NDArray zeros = NDArray.zeros(2, 3);
+
+    assertEquals(0f, zeros.sum(), 0.0001f);
+}
+
+@Test
+void sumWorksForOnes() {
+    NDArray ones = NDArray.ones(2, 3);
+
+    assertEquals(6f, ones.sum(), 0.0001f);
+}
+@Test
+void linspaceCreatesExpectedSequence() {
+    NDArray array = NDArray.linspace(0f, 1f, 5);
+
+    assertEquals(1, array.ndim());
+    assertEquals(5, array.size());
+    assertArrayEquals(new int[]{5}, array.shape());
+    assertArrayEquals(
+            new float[]{0f, 0.25f, 0.5f, 0.75f, 1f},
+            array.toFlatArray(),
+            0.0001f
+    );
+}
+
+@Test
+void linspaceWithOneValueReturnsStartOnly() {
+    NDArray array = NDArray.linspace(7f, 10f, 1);
+
+    assertEquals(1, array.ndim());
+    assertEquals(1, array.size());
+    assertArrayEquals(new int[]{1}, array.shape());
+    assertArrayEquals(new float[]{7f}, array.toFlatArray(), 0.0001f);
+}
+
+@Test
+void linspaceThrowsWhenNumIsNotPositive() {
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class,
+                    () -> NDArray.linspace(0f, 1f, 0));
+
+    assertEquals("num must be > 0", exception.getMessage());
+}
+@Test
+void absWorksFor1DArray() {
+    NDArray array = NDArray.array(new float[]{-1f, 2f, -3f});
+
+    NDArray result = array.abs();
+
+    assertEquals(1, result.ndim());
+    assertEquals(3, result.size());
+    assertArrayEquals(new int[]{3}, result.shape());
+    assertArrayEquals(new float[]{1f, 2f, 3f}, result.toFlatArray(), 0.0001f);
+}
+
+@Test
+void absWorksFor2DArray() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {-1f, 2f},
+            {-3f, 4f}
+    });
+
+    NDArray result = matrix.abs();
+
+    assertEquals(2, result.ndim());
+    assertEquals(4, result.size());
+    assertArrayEquals(new int[]{2, 2}, result.shape());
+    assertArrayEquals(new float[]{1f, 2f, 3f, 4f}, result.toFlatArray(), 0.0001f);
+}
+
+@Test
+void absDoesNotModifyOriginalArray() {
+    NDArray array = NDArray.array(new float[]{-1f, 2f, -3f});
+
+    NDArray result = array.abs();
+
+    assertArrayEquals(new float[]{-1f, 2f, -3f}, array.toFlatArray(), 0.0001f);
+    assertArrayEquals(new float[]{1f, 2f, 3f}, result.toFlatArray(), 0.0001f);
+}
 }
