@@ -455,4 +455,34 @@ void transposeThrowsFor1DArray() {
 
     assertEquals("transpose is only supported for 2D arrays", exception.getMessage());
 }
+@Test
+void sumWorksFor1DArray() {
+    NDArray array = NDArray.array(new float[]{1f, 2f, 3f});
+
+    assertEquals(6f, array.sum(), 0.0001f);
+}
+
+@Test
+void sumWorksFor2DArray() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {1f, 2f},
+            {3f, 4f}
+    });
+
+    assertEquals(10f, matrix.sum(), 0.0001f);
+}
+
+@Test
+void sumWorksForZeros() {
+    NDArray zeros = NDArray.zeros(2, 3);
+
+    assertEquals(0f, zeros.sum(), 0.0001f);
+}
+
+@Test
+void sumWorksForOnes() {
+    NDArray ones = NDArray.ones(2, 3);
+
+    assertEquals(6f, ones.sum(), 0.0001f);
+}
 }

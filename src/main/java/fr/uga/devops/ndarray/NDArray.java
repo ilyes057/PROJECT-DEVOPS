@@ -305,4 +305,13 @@ public class NDArray {
 
         return new NDArray(transposedData, cols, rows);
     }
+    public float sum() {
+        float total = 0f;
+
+        for (float value : data) {
+            total += value;
+        }
+
+        return total;
+    }
 }
