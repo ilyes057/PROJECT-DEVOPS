@@ -314,4 +314,24 @@ public class NDArray {
 
         return total;
     }
+    public static NDArray linspace(float start, float stop, int num) {
+        if (num <= 0) {
+            throw new IllegalArgumentException("num must be > 0");
+        }
+
+        float[] values = new float[num];
+
+        if (num == 1) {
+            values[0] = start;
+            return new NDArray(values, 1);
+        }
+
+        float step = (stop - start) / (num - 1);
+
+        for (int i = 0; i < num; i++) {
+            values[i] = start + i * step;
+        }
+
+        return new NDArray(values, num);
+    }
 }

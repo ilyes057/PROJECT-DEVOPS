@@ -485,4 +485,36 @@ void sumWorksForOnes() {
 
     assertEquals(6f, ones.sum(), 0.0001f);
 }
+@Test
+void linspaceCreatesExpectedSequence() {
+    NDArray array = NDArray.linspace(0f, 1f, 5);
+
+    assertEquals(1, array.ndim());
+    assertEquals(5, array.size());
+    assertArrayEquals(new int[]{5}, array.shape());
+    assertArrayEquals(
+            new float[]{0f, 0.25f, 0.5f, 0.75f, 1f},
+            array.toFlatArray(),
+            0.0001f
+    );
+}
+
+@Test
+void linspaceWithOneValueReturnsStartOnly() {
+    NDArray array = NDArray.linspace(7f, 10f, 1);
+
+    assertEquals(1, array.ndim());
+    assertEquals(1, array.size());
+    assertArrayEquals(new int[]{1}, array.shape());
+    assertArrayEquals(new float[]{7f}, array.toFlatArray(), 0.0001f);
+}
+
+@Test
+void linspaceThrowsWhenNumIsNotPositive() {
+    IllegalArgumentException exception =
+            assertThrows(IllegalArgumentException.class,
+                    () -> NDArray.linspace(0f, 1f, 0));
+
+    assertEquals("num must be > 0", exception.getMessage());
+}
 }
