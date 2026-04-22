@@ -517,4 +517,40 @@ void linspaceThrowsWhenNumIsNotPositive() {
 
     assertEquals("num must be > 0", exception.getMessage());
 }
+@Test
+void absWorksFor1DArray() {
+    NDArray array = NDArray.array(new float[]{-1f, 2f, -3f});
+
+    NDArray result = array.abs();
+
+    assertEquals(1, result.ndim());
+    assertEquals(3, result.size());
+    assertArrayEquals(new int[]{3}, result.shape());
+    assertArrayEquals(new float[]{1f, 2f, 3f}, result.toFlatArray(), 0.0001f);
+}
+
+@Test
+void absWorksFor2DArray() {
+    NDArray matrix = NDArray.array(new float[][]{
+            {-1f, 2f},
+            {-3f, 4f}
+    });
+
+    NDArray result = matrix.abs();
+
+    assertEquals(2, result.ndim());
+    assertEquals(4, result.size());
+    assertArrayEquals(new int[]{2, 2}, result.shape());
+    assertArrayEquals(new float[]{1f, 2f, 3f, 4f}, result.toFlatArray(), 0.0001f);
+}
+
+@Test
+void absDoesNotModifyOriginalArray() {
+    NDArray array = NDArray.array(new float[]{-1f, 2f, -3f});
+
+    NDArray result = array.abs();
+
+    assertArrayEquals(new float[]{-1f, 2f, -3f}, array.toFlatArray(), 0.0001f);
+    assertArrayEquals(new float[]{1f, 2f, 3f}, result.toFlatArray(), 0.0001f);
+}
 }

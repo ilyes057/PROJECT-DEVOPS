@@ -334,4 +334,13 @@ public class NDArray {
 
         return new NDArray(values, num);
     }
+    public NDArray abs() {
+        float[] result = new float[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            result[i] = Math.abs(data[i]);
+        }
+
+        return new NDArray(result, shape);
+    }
 }
