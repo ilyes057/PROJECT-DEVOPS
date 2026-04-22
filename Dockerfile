@@ -13,6 +13,6 @@ FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
-COPY --from=builder /build/target/*.jar /app/ndarray-java.jar
+COPY --from=builder /build/target/classes /app/classes
 
-CMD ["sh", "-c", "echo 'Built artifact:' && ls -lh /app && echo 'Jar ready: /app/ndarray-java.jar'"]
+CMD ["java", "-cp", "/app/classes", "fr.uga.devops.ndarray.DemoMain"]
